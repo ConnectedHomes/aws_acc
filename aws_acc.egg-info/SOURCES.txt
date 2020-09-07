@@ -1,0 +1,7 @@
+README.rst
+setup.py
+aws_acc/__init__.py
+aws_acc.egg-info/PKG-INFO
+aws_acc.egg-info/SOURCES.txt
+aws_acc.egg-info/dependency_links.txt
+aws_acc.egg-info/top_level.txt
