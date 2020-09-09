@@ -2,7 +2,6 @@ from uuid import uuid4
 
 from boto3.dynamodb.conditions import Key
 
-
 DEFAULT_USERNAME = 'default'
 # DEFAULT_ACCOUNTNUMBER = '165954058622'
 DEFAULT_ACCOUNTNUMBER = '039759963043'
@@ -38,8 +37,8 @@ class InMemoryAWSAccDB(AWSAccDB):
             all_items.extend(self.list_items(accno))
         return all_items
 
-    def list_items(self, accno=DEFAULT_ACCOUNTNAME):
-        return self._state.get(username, {}).values()
+    def list_items(self, AccountNumber=DEFAULT_ACCOUNTNAME):
+        return self._state.get(AccountNumber, {}).values()
 
     def add_item(self, description=None, metadata=None,
                  AccountNumber=DEFAULT_ACCOUNTNUMBER, AccountName=DEFAULT_ACCOUNTNAME):
@@ -54,18 +53,18 @@ class InMemoryAWSAccDB(AWSAccDB):
         }
         return accno
 
-    def get_item(self, accno):
-        return self._state[accname][accno]
+    def get_item(self, AccountNumber):
+        return self._state[AccountName][AccountNumber]
 
-    def delete_item(self, accno):
-        del self._state[accno]
+    def delete_item(self, AccountNumber):
+        del self._state[AccountNumber]
 
-    def update_item(self, description, metadata=None, state=None,
-                    accno=DEFAULT_ACCOUNTNUMBER, accname=DEFAULT_ACCOUNTNAME):
-        item = self._state[accno][accname]
+    def update_item(self, description=None, metadata=None, Active=None,
+                 AccountNumber=DEFAULT_ACCOUNTNUMBER, AccountName=DEFAULT_ACCOUNTNAME):
+        item = self._state[AccountNumber][AccountName]
         if description is not None:
             item['Description'] = description
-        if state is not None:
+        if Active is not None:
             item['Active'] = state
         if metadata is not None:
             item['Metadata'] = metadata
@@ -85,57 +84,44 @@ class DynamoDBAWSAcc(AWSAccDB):
         )
         return response['Items']
 
-    def add_item(self, description=None, metadata=None,
+    def add_item(self, description=None, metadata=None, Active=None,
                  AccountNumber=DEFAULT_ACCOUNTNUMBER, AccountName=DEFAULT_ACCOUNTNAME):
         self._table.put_item(
             Item={
             'AccountNumber': AccountNumber,
             'Description': description,
-            'Active': 'N',
+            'Active': Active,
             'metadata': metadata if metadata is not None else {},
             'AccountName': AccountName
         }
         )
         return AccountNumber
 
-    # def add_item(self, description, metadata=None, username=DEFAULT_USERNAME):
-    #     uid = str(uuid4())
-    #     self._table.put_item(
-    #         Item={
-    #             'username': username,
-    #             'uid': uid,
-    #             'description': description,
-    #             'state': 'unstarted',
-    #             'metadata': metadata if metadata is not None else {},
-    #         }
-    #     )
-    #     return uid
-
-    def get_item(self, accno):
+    def get_item(self, AccountNumber):
         response = self._table.get_item(
             Key={
-                'AccountNumber': accno
+                'AccountNumber': AccountNumber
             },
         )
         print(response)
         return response['Item']
 
-    def delete_item(self, uid, username=DEFAULT_USERNAME):
+    def delete_item(self, AccountNumber=None):
+        print(f"DELETE Account: {AccountNumber} {self._table}")
         self._table.delete_item(
             Key={
-                'username': username,
-                'uid': uid,
+                'AccountNumber': AccountNumber
             }
         )
 
-    def update_item(self, uid, description=None, state=None,
-                    metadata=None, username=DEFAULT_USERNAME):
+    def update_item(self, AccountNumber, Description=None, Active=None,
+                    metadata=None):
         # We could also use update_item() with an UpdateExpression.
-        item = self.get_item(uid, username)
-        if description is not None:
-            item['description'] = description
-        if state is not None:
-            item['state'] = state
+        item = self.get_item(AccountNumber)
+        if Description is not None:
+            item['Description'] = Description
+        if Active is not None:
+            item['Active'] = Active
         if metadata is not None:
             item['metadata'] = metadata
         self._table.put_item(Item=item)

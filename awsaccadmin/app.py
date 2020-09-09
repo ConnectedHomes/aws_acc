@@ -38,45 +38,27 @@ def add_new_account():
     return get_app_db().add_item(
         description=body["Description"],
         metadata=body.get("metadata"),
+        Active="Y",
         AccountNumber = body["AccountNumber"],
         AccountName = body["AccountName"]
     )
 
-@app.route("/awsacc/{accno}", methods=["GET"])
+@app.route("/awsacc/{accno}", methods=["GET"] )
 def get_account(accno):
     return get_app_db().get_item(accno)
 
 
-@app.route("/awsacc/{uid}", methods=["DELETE"])
-def delete_todo(uid):
-    return get_app_db().delete_item(uid)
+@app.route("/awsacc/{accno}", methods=["DELETE"])
+def delete_account(accno):
+    print(f"DELETE Account: {accno} ")
+    return get_app_db().delete_item( AccountNumber=accno)
 
 
-@app.route("/awsacc/{uid}", methods=["PUT"])
-def update_todo(uid):
+@app.route("/awsacc/{accno}", methods=["PUT"])
+def update_account(accno):
     body = app.current_request.json_body
     get_app_db().update_item(
-        uid,
-        description=body.get("description"),
-        state=body.get("state"),
+        accno,
+        Description=body.get("Description"),
+        Active=body.get("Active"),
         metadata=body.get("metadata"))
-
-# The view function above will return {"hello": "world"}
-# whenever you make an HTTP GET request to "/".
-#
-# Here are a few more examples:
-#
-# @app.route("/hello/{name}")
-# def hello_name(name):
-#    # "/hello/james" -> {"hello": "james"}
-#    return {"hello": name}
-#
-# @app.route("/users", methods=["POST"])
-# def create_user():
-#     # This is the JSON body the user sent in their POST request.
-#     user_as_json = app.current_request.json_body
-#     # We"ll echo the json body back to the user in a "user" key.
-#     return {"user": user_as_json}
-#
-# See the README documentation for more examples.
-#
