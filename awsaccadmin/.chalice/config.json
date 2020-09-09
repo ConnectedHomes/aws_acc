@@ -1,0 +1,13 @@
+{
+  "version": "2.0",
+  "app_name": "awsaccadmin",
+  "stages": {
+    "dev": {
+      "api_gateway_stage": "api",
+      "environment_variables": {
+        "USERS_TABLE_NAME": "AWSAccountUsers-app-a77fb38e-ab49-4dab-9f85-dfba502a19b6",
+        "APP_TABLE_NAME": "AWSAccountAdmin-app-077835b9-9c18-4d7d-9574-960b3d0d7ed2"
+      }
+    }
+  }
+}

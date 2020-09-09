@@ -3,9 +3,14 @@ name = "aws_acc"
 version = "0.1.0"
 description = ""
 authors = ["debswade <deborah.balm@hivehome.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+repository = "https://github.com/debswade/aws_acc"
 
 [tool.poetry.dependencies]
 python = "^3.8"
+httpie = "^2.2.0"
+chalice = "^1.19.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
