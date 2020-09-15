@@ -27,7 +27,17 @@
   - http https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc/058700374591
 
 - Add an AWS Account
-  - echo '{ "AccountNumber": "01234567890", "AccountName": "DebsTestAccount", "Active": "N", "Description": "Debs Test Account", "RealUsers": "N", "AccOwners": {"Deborah Balm", "Chris Allison"} "OwnerTeam": "SRE", "PreviousName": "Debs", "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev", "SecOpsSlackChannel": "#debs_backoffice", "TeamEmail": "sre@bgch.co.uk" }' | http POST https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc
+  - echo '{ "AccountNumber": "01234567890", \
+  "AccountName": "DebsTestAccount", \
+  "Active": "N", \
+  "Description": "Debs Test Account", \
+  "RealUsers": "N", \
+  "AccOwners": {"Deborah Balm", "Chris Allison"}, \
+  "OwnerTeam": "SRE", \
+  "PreviousName": "Debs", \
+  "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev", \
+  "SecOpsSlackChannel": "#debs_backoffice", \
+  "TeamEmail": "sre@bgch.co.uk" }' | http POST https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc
 
   - echo '{ "AccountNumber": "01234567810", "AccountName": "DebsTestAccount2", "Active": "N", "Description": "Debs Test Account 2", "RealUsers": "N", "AccOwners": "Deborah Balm", "OwnerTeam": "SRE", "PreviousName": "Debs", "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev", "SecOpsSlackChannel": "#debs_backoffice", "TeamEmail": "sre@bgch.co.uk" }' | http POST http POST https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc
 
@@ -40,7 +50,6 @@
   - echo '{"AccOwners": "Deborah Balm, Chris Allison" }' | http PUT https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc/01234567810
 
 ### LOCAL SERVER
-
 
 - List Default AWS Account
   - http localhost:8000/awsacc
@@ -56,9 +65,29 @@
   - http localhost:8000/awsaccc/058700374591
 
 - Add an AWS Account
-  - echo '{ "AccountNumber": "01234567890", "AccountName": "DebsTestAccount", "Active": "N", "Description": "Debs Test Account", "RealUsers": "N", "AccOwners": {"Deborah Balm", "Chris Allison"} "OwnerTeam": "SRE", "PreviousName": "Debs", "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev", "SecOpsSlackChannel": "#debs_backoffice", "TeamEmail": "sre@bgch.co.uk" }' | http POST localhost:8000/awsacc
+  - echo '{ "AccountNumber": "01234567890", \
+  "AccountName": "DebsTestAccount", \
+  "Active": "N", \
+  "Description": "Debs Test Account", \
+  "RealUsers": "N", \
+  "AccOwners": {"Deborah Balm", "Chris Allison"},\
+  "OwnerTeam": "SRE", \
+  "PreviousName": "Debs", \
+  "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev", \
+  "SecOpsSlackChannel": "#debs_backoffice", \
+  "TeamEmail": "sre@bgch.co.uk" }' | http POST localhost:8000/awsacc
 
-  - echo '{ "AccountNumber": "01234567810", "AccountName": "DebsTestAccount2", "Active": "N", "Description": "Debs Test Account 2", "RealUsers": "N", "AccOwners": "Deborah Balm", "OwnerTeam": "SRE", "PreviousName": "Debs", "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev", "SecOpsSlackChannel": "#debs_backoffice", "TeamEmail": "sre@bgch.co.uk" }' | http POST http://127.0.0.1:8000/awsacc
+  - echo '{ "AccountNumber": "01234567810",\
+   "AccountName": "DebsTestAccount2", \
+   "Active": "N",\
+   "Description": "Debs Test Account 2",\
+   "RealUsers": "N",\
+   "AccOwners": "Deborah Balm",\
+   "OwnerTeam": "SRE",\
+   "PreviousName": "Debs", \
+   "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev",\
+   "SecOpsSlackChannel": "#debs_backoffice", \
+   "TeamEmail": "sre@bgch.co.uk" }' | http POST http://127.0.0.1:8000/awsacc
 
 
 - Delete an Account
