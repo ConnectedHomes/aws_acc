@@ -11,6 +11,8 @@ repository = "https://github.com/debswade/aws_acc"
 python = "^3.8"
 httpie = "^2.2.0"
 chalice = "^1.19.0"
+boto3 = "^1.14.58"
+pathlib = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
