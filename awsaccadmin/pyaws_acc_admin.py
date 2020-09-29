@@ -8,8 +8,8 @@ import argparse
 # 4) Get one numbered AWS account (mode=None, accno=acno)
 # 5) Add an account with the supplied parameters
 
-baseurl = "https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api"
-# baseurl = "http://localhost:8000"
+# baseurl = "https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api"
+baseurl = "http://localhost:8000"
 headers = {'Content-Type': 'application/json', }
 
 parser = argparse.ArgumentParser()
@@ -30,13 +30,15 @@ parser.add_argument("--secopsslack", help="Slack Channel for security notificati
 args = parser.parse_args()
 
 
-def eval_command(accno, mode):
+def eval_command(args):
     account_details = []
     params = {}
 
     if args.mode == "add":
         print(f"In add for {args.accno}")
-        params = json.dumps({   "AccOwners": args.accowners,
+        api_url = '{}/awsacc'.format(baseurl, args)
+        print(args)
+        params = {   "AccOwners": args.accowners,
                         "AccountName": args.accname,
                         "AccountNumber": args.accno,
                         "Active": args.active,
@@ -47,17 +49,13 @@ def eval_command(accno, mode):
                         "SecOpsEmail": args.secopsemail,
                         "SecOpsSlackChannel": args.secopsslack,
                         "TeamEmail": args.teamemail,
-        })
-
-        api_url = '{}/awsacc'.format(baseurl)
+        }
         # api_url = 'http://localhost:8000/awsacc'
-        print(api_url)
-        print(f"Params {params}")
-
+        # print(api_url)
+        print(f"Params {params} type {type(params)}")
         response = requests.post(api_url, headers=headers, params=params)
-
         account_details.append(response.content)
-        print(f"response.content {response.content}")
+        # print(f"response.content {response.content}")
 
 
     elif args.mode == "search":  # 2, 3
@@ -71,8 +69,8 @@ def eval_command(accno, mode):
             api_url = '{}/awsacc'.format(baseurl)  # 1
             response = requests.get(api_url, headers=headers, params=params)
 
-    print(response)
-    print(response.content)
+    # print(response)
+    # print(response.content)
     if response.status_code == 200:
         if "not found." in str(response.content):
             account_details.append(response.content)
@@ -83,7 +81,7 @@ def eval_command(accno, mode):
         print(f"403 Forbidden.  Try renewing your chaim credentials.")
     elif response.status_code == 400:
         print(f"400 Bad Request.  Check your request.")
-        print(response.request)
+        # print(response.request)
     else:
         print(response.status_code)
         # account_details = []
@@ -94,17 +92,17 @@ def go():
         args.mode = "search"
 
     print(f"Process request for mode {args.mode} AWS Account {args.accno}.")
-    # print(f"Accno {args.accno}, Mode {args.mode}")
-    account_info = eval_command(args.accno, args.mode)
-    print(f"Account request {account_info}")
+    print(f"Accno {args.accno}, Mode {args.mode}")
+    account_info = eval_command(args)
+    print(f"Accountrequest {account_info}")
 
     if account_info is not None:
         if len(account_info) == 1:
-            print(f"Account request: {account_info} ")
-            print(f"Account request: {json.dumps(account_info[0], sort_keys=True, indent=4)} ")
+            print(f"Accountrequest: {account_info} ")
+            # print(f"Account request: {json.dumps(account_info[0], sort_keys=True, indent=4)} ")
         else:
             for c, x in enumerate(account_info):
-                print(f"Account request: ")
+                print(f"Accountrequest: ")
                 print(c, json.dumps(c, sort_keys=True, indent=4))
     else:
         print('[!] Request Failed')

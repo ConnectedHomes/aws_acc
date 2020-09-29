@@ -51,16 +51,18 @@ class DynamoDBAWSAcc(AWSAccDB):
         return sitems
 
     def add_account(self, accitem ):
-        # print(accitem)
+        # app.log.debug(f"In add account {accitem}")
         AccountNumber = accitem['AccountNumber']
-        response = self._table.get_item(
-            Key={'AccountNumber': AccountNumber} )
 
-        if 'Item' in response:
-            response = [409, "Conflict, record exists."]
-        else:
-            response = self._table.put_item(Item=accitem)
-
+        # response = self._table.get_item(
+        #     Key={'AccountNumber': AccountNumber} )
+        # print(f"response add account {response}")
+        #
+        # if 'Item' in response:
+        #     response = [409, "Conflict, record exists."]
+        # else:
+        response = self._table.put_item(Item=accitem)
+        print(f"leaving add account ")
         return response
 
     def get_account(self, AccountNumber):
