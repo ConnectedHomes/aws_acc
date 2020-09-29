@@ -13,6 +13,7 @@ httpie = "^2.2.0"
 chalice = "^1.19.0"
 boto3 = "^1.14.58"
 pathlib = "^1.0.1"
+click = "^7.1.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"

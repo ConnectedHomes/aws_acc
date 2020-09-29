@@ -12,7 +12,7 @@ http localhost:8000/awsacc/all
 
 Get one numbered AWS Accounts
 http localhost:8000/awsacc/178611996779
-http localhost:8000/awsaccc/058700374591
+http localhost:8000/awsacc/058700374591
 
 Add an AWS Account
 echo '{ "AccountNumber": "01234567890", "AccountName": "DebsTestAccount", "Active": "N", "Description": "Debs Test Account", "RealUsers": "N", "AccOwners": {"Deborah Balm", "Chris Allison"} "OwnerTeam": "SRE", "PreviousName": "Debs", "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev", "SecOpsSlackChannel": "#debs_backoffice", "TeamEmail": "sre@bgch.co.uk" }' | http POST localhost:8000/awsacc
@@ -39,18 +39,23 @@ https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/
 Get default AWS Account
 http https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc
 
-Get all AWS Accounts
+Get all Active AWS Accounts
 http https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc/all
+
+Get all AWS Accounts including deleted
+http https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc/allever
 
 Get one numbered AWS Accounts
 http https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc/178611996779
 http https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc/058700374591
 
+
 Add an AWS Account
 echo '{ "AccountNumber": "01234567890", "AccountName": "DebsTestAccount", "Active": "N", "Description": "Debs Test Account", "RealUsers": "N", "AccOwners": {"Deborah Balm", "Chris Allison"} "OwnerTeam": "SRE", "PreviousName": "Debs", "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev", "SecOpsSlackChannel": "#debs_backoffice", "TeamEmail": "sre@bgch.co.uk" }' | http POST https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc
 
-echo '{ "AccountNumber": "01234567810", "AccountName": "DebsTestAccount2", "Active": "N", "Description": "Debs Test Account 2", "RealUsers": "N", "AccOwners": "Deborah Balm", "OwnerTeam": "SRE", "PreviousName": "Debs", "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev", "SecOpsSlackChannel": "#debs_backoffice", "TeamEmail": "sre@bgch.co.uk" }' | http POST http POST https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc
+echo '{ "AccountNumber": "01234567810", "AccountName": "DebsTestAccount2", "Active": "N", "Description": "Debs Test Account 2", "RealUsers": "N", "AccOwners": "Deborah Balm", "OwnerTeam": "SRE", "PreviousName": "Debs", "SecOpsEmail": "secadmin-prod.awsnotifications@hivehome.dev", "SecOpsSlackChannel": "#debs_backoffice", "TeamEmail": "sre@bgch.co.uk" }' | http POST https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc
 
+echo '{"AccOwners": "Deborah Balm", "AccountName": "DebsDemoAccount", "AccountNumber": "0987654321", "Active": "N", "Description": "A Demo Account Add", "OwnerTeam": "SRE", "PreviousName": null, "RealUsers": "N", "SecOpsEmail": "sre@hivehome.com", "SecOpsSlackChannel": "#ops-chat", "TeamEmail": "sre@hivehome.com"}' | http POST https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc
 
 Delete an Account
 http DELETE https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc/01234567810
@@ -58,3 +63,15 @@ http DELETE https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc/01
 Update Details in an account
 echo '{"Active": "Y", "Description": "Debs purple Test Account 2"}' | http PUT https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc/01234567810
 echo '{"AccOwners": "Deborah Balm, Chris Allison" }' | http PUT https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api/awsacc/01234567810
+
+
+
+<class 'requests.models.Response'>
+{'SecOpsEmail': 'secadmin-prod.awsnotifications@hivehome.dev', 'PreviousName': 'Debs', 'AccountNumber': '01234567810', 'AccOwners': 'Deborah Balm, Chris Allison', 'OwnerTeam': 'SRE', 'SecOpsSlackChannel': '#debs_backoffice', 'Description': 'Debs purple Test Account 2', 'Active': 'N', 'RealUsers': 'N', 'TeamEmail': 'sre@bgch.co.uk', 'AccountName': 'DebsTestAccount2'}
+11
+<class 'dict'>
+
+
+ python pyaws_acc_admin.py --accno 0987654321
+
+ python pyaws_acc_admin.py --mode "add" --accno 0987654321 --accname DebsDemoAccount --active "N" --desc "A Demo Account Add" --realusers "N" --accowners "Deborah Balm" --ownerteam "SRE" --teamemail "sre@hivehome.com" --secopsemail "sre@hivehome.com" --secopsslack "#ops-chat"
