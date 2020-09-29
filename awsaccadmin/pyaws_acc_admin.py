@@ -36,8 +36,8 @@ def eval_command(args):
 
     if args.mode == "add":
         print(f"In add for {args.accno}")
-        api_url = '{}/awsacc'.format(baseurl, args)
-        print(args)
+        api_url = '{}/awsacc'.format(baseurl)
+        # print(args)
         params = {   "AccOwners": args.accowners,
                         "AccountName": args.accname,
                         "AccountNumber": args.accno,
@@ -50,8 +50,7 @@ def eval_command(args):
                         "SecOpsSlackChannel": args.secopsslack,
                         "TeamEmail": args.teamemail,
         }
-        # api_url = 'http://localhost:8000/awsacc'
-        # print(api_url)
+
         print(f"Params {params} type {type(params)}")
         response = requests.post(api_url, headers=headers, params=params)
         account_details.append(response.content)
@@ -94,7 +93,7 @@ def go():
     print(f"Process request for mode {args.mode} AWS Account {args.accno}.")
     print(f"Accno {args.accno}, Mode {args.mode}")
     account_info = eval_command(args)
-    print(f"Accountrequest {account_info}")
+    # print(f"Accountrequest {account_info}")
 
     if account_info is not None:
         if len(account_info) == 1:

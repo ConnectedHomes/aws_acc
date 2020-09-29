@@ -35,11 +35,8 @@ def get_account(accno):
 
 @app.route("/awsacc", methods=["POST"])
 def add_new_account():
-    app.log.debug(f"JSONBODY: {app.current_request.json_body}")
-
     body = app.current_request.json_body
-    # body = app.current_request.json_body
-
+    app.log.debug(f"JSONBODY: {body} type: {type(body)}")
     # body = '{"AccOwners": "Deborah Balm", "AccountName": "DebsDemoAccount", "AccountNumber": "0987654321", "Active": "N", "Description": "A Demo Account Add", "OwnerTeam": "SRE", "PreviousName": null, "RealUsers": "N", "SecOpsEmail": "sre@hivehome.com", "SecOpsSlackChannel": "#ops-chat", "TeamEmail": "sre@hivehome.com"}'
     # body = app.current_request.raw_body.decode()
     # body = str.decode(body)
