@@ -8,8 +8,8 @@ import argparse
 # 4) Get one numbered AWS account (mode=None, accno=acno)
 # 5) Add an account with the supplied parameters
 
-# baseurl = "https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api"
-baseurl = "http://localhost:8000"
+baseurl = "https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api"
+# baseurl = "http://localhost:8000"
 headers = {'Content-Type': 'application/json', }
 
 parser = argparse.ArgumentParser()
@@ -35,9 +35,9 @@ def eval_command(args):
     params = {}
 
     if args.mode == "add":
+        headers = {'Content-Type': 'application/json' }
         print(f"In add for {args.accno}")
         api_url = '{}/awsacc'.format(baseurl)
-        # print(args)
         params = {   "AccOwners": args.accowners,
                         "AccountName": args.accname,
                         "AccountNumber": args.accno,
@@ -50,6 +50,8 @@ def eval_command(args):
                         "SecOpsSlackChannel": args.secopsslack,
                         "TeamEmail": args.teamemail,
         }
+        params = json.dumps(params)
+        params = json.loads(params)
 
         print(f"Params {params} type {type(params)}")
         response = requests.post(api_url, headers=headers, params=params)
@@ -68,8 +70,9 @@ def eval_command(args):
             api_url = '{}/awsacc'.format(baseurl)  # 1
             response = requests.get(api_url, headers=headers, params=params)
 
-    # print(response)
-    # print(response.content)
+    print(response)
+    print(response.content)
+
     if response.status_code == 200:
         if "not found." in str(response.content):
             account_details.append(response.content)
@@ -83,7 +86,7 @@ def eval_command(args):
         # print(response.request)
     else:
         print(response.status_code)
-        # account_details = []
+        account_details = []
     return account_details
 
 def go():

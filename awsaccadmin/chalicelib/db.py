@@ -1,4 +1,5 @@
 from uuid import uuid4
+# import json
 from boto3.dynamodb.conditions import Key, Attr
 
 DEFAULT_ACCOUNTNUMBER = '039759963043'
@@ -16,7 +17,7 @@ class AWSAccDB(object):
     def get_account(self, AccountNumber):
         pass
 
-    def add_account(self, accitem):
+    def add_account(self):
         pass
 
     def delete_account(self, AccountNumber):
@@ -53,16 +54,12 @@ class DynamoDBAWSAcc(AWSAccDB):
     def add_account(self, accitem ):
         # app.log.debug(f"In add account {accitem}")
         AccountNumber = accitem['AccountNumber']
-
-        # response = self._table.get_item(
-        #     Key={'AccountNumber': AccountNumber} )
-        # print(f"response add account {response}")
-        #
-        # if 'Item' in response:
-        #     response = [409, "Conflict, record exists."]
-        # else:
-        response = self._table.put_item(Item=accitem)
-        print(f"leaving add account ")
+        response = self._table.get_item(
+            Key={'AccountNumber': AccountNumber} )
+        if 'Item' in response:
+            response = [409, "Conflict, record exists."]
+        else:
+            response = self._table.put_item(Item=accitem)
         return response
 
     def get_account(self, AccountNumber):

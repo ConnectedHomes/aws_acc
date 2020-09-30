@@ -1,11 +1,12 @@
 from chalice import Chalice
 from chalicelib import db
+from urllib.parse import urlparse, parse_qs
 import boto3
 import os
 import json
 
 app = Chalice(app_name="awsaccadmin")
-app.debug = True
+# app.debug = True
 _DB = None
 
 def get_app_db():
@@ -35,14 +36,16 @@ def get_account(accno):
 
 @app.route("/awsacc", methods=["POST"])
 def add_new_account():
-    body = app.current_request.json_body
-    app.log.debug(f"JSONBODY: {body} type: {type(body)}")
+    parsed = parse_qs(app.current_request.raw_body)
     # body = '{"AccOwners": "Deborah Balm", "AccountName": "DebsDemoAccount", "AccountNumber": "0987654321", "Active": "N", "Description": "A Demo Account Add", "OwnerTeam": "SRE", "PreviousName": null, "RealUsers": "N", "SecOpsEmail": "sre@hivehome.com", "SecOpsSlackChannel": "#ops-chat", "TeamEmail": "sre@hivehome.com"}'
-    # body = app.current_request.raw_body.decode()
-    # body = str.decode(body)
-    response = get_app_db().add_account(body)
-    response = {"response": "Return"}
-    return response
+    # body = app.current_request.raw_body
+    request = app.current_request
+    # print(request.method)
+    # body = request.json_body
+
+    # body = json.loads(body)
+    # response = get_app_db().add_account(body)
+    return parsed
 
 @app.route("/awsacc/{accno}", methods=["DELETE"])
 def delete_account(accno):
