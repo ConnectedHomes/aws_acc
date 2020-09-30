@@ -11,6 +11,7 @@ import argparse
 baseurl = "https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api"
 # baseurl = "http://localhost:8000"
 headers = {'Content-Type': 'application/json', }
+api_url = '{}/awsacc'.format(baseurl)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--accno",
@@ -29,35 +30,29 @@ parser.add_argument("--secopsemail", help="Email address for security notificati
 parser.add_argument("--secopsslack", help="Slack Channel for security notifications for this account.", default=None)
 args = parser.parse_args()
 
+def make_dict_from_args(args):
+    params = {"AccOwners": args.accowners,
+              "AccountName": args.accname,
+              "AccountNumber": args.accno,
+              "Active": args.active,
+              "Description": args.desc,
+              "OwnerTeam": args.ownerteam,
+              "PreviousName": args.prevname,
+              "RealUsers": args.realusers,
+              "SecOpsEmail": args.secopsemail,
+              "SecOpsSlackChannel": args.secopsslack,
+              "TeamEmail": args.teamemail,
+              }
+    return params
 
 def eval_command(args):
     account_details = []
     params = {}
-
+    headers = {'Content-Type': 'application/json'}
     if args.mode == "add":
-        headers = {'Content-Type': 'application/json' }
-        print(f"In add for {args.accno}")
-        api_url = '{}/awsacc'.format(baseurl)
-        params = {   "AccOwners": args.accowners,
-                        "AccountName": args.accname,
-                        "AccountNumber": args.accno,
-                        "Active": args.active,
-                        "Description": args.desc,
-                        "OwnerTeam": args.ownerteam,
-                        "PreviousName": args.prevname,
-                        "RealUsers": args.realusers,
-                        "SecOpsEmail": args.secopsemail,
-                        "SecOpsSlackChannel": args.secopsslack,
-                        "TeamEmail": args.teamemail,
-        }
-        params = json.dumps(params)
-        params = json.loads(params)
-
-        print(f"Params {params} type {type(params)}")
-        response = requests.post(api_url, headers=headers, params=params)
+        params = make_dict_from_args(args)
+        response = requests.post(api_url, headers=headers, data=json.dumps(params))
         account_details.append(response.content)
-        # print(f"response.content {response.content}")
-
 
     elif args.mode == "search":  # 2, 3
         api_url = '{}/awsacc/{}'.format(baseurl, args.mode)
@@ -67,7 +62,7 @@ def eval_command(args):
             api_url = '{}/awsacc/{}'.format(baseurl, args.accno)
             response = requests.get(api_url, headers=headers, params=params)
         else:
-            api_url = '{}/awsacc'.format(baseurl)  # 1
+             # 1
             response = requests.get(api_url, headers=headers, params=params)
 
     print(response)
@@ -108,6 +103,4 @@ def go():
                 print(c, json.dumps(c, sort_keys=True, indent=4))
     else:
         print('[!] Request Failed')
-
-
 go()

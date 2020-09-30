@@ -34,18 +34,18 @@ def get_awsacc():
 def get_account(accno):
     return get_app_db().get_account(accno)
 
-@app.route("/awsacc", methods=["POST"])
+@app.route("/awsacc", methods=["POST"], content_types=['application/json'])
 def add_new_account():
-    parsed = parse_qs(app.current_request.raw_body)
+    # parsed = parse_qs(app.current_request.raw_body)
     # body = '{"AccOwners": "Deborah Balm", "AccountName": "DebsDemoAccount", "AccountNumber": "0987654321", "Active": "N", "Description": "A Demo Account Add", "OwnerTeam": "SRE", "PreviousName": null, "RealUsers": "N", "SecOpsEmail": "sre@hivehome.com", "SecOpsSlackChannel": "#ops-chat", "TeamEmail": "sre@hivehome.com"}'
     # body = app.current_request.raw_body
     request = app.current_request
     # print(request.method)
-    # body = request.json_body
+    body = request.json_body
 
     # body = json.loads(body)
-    # response = get_app_db().add_account(body)
-    return parsed
+    response = get_app_db().add_account(body)
+    return response
 
 @app.route("/awsacc/{accno}", methods=["DELETE"])
 def delete_account(accno):
