@@ -10,23 +10,45 @@ import argparse
 
 # baseurl = "https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api"
 baseurl = "http://localhost:8000"
-headers = {'Content-Type': 'application/json', }
+headers = {
+    "Content-Type": "application/json",
+}
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--accno",
-                    help="use an account number to get details about a specific account.",
-                    default=None)
+parser.add_argument(
+    "--accno",
+    help="use an account number to get details about a specific account.",
+    default=None,
+)
 parser.add_argument("--mode", help="use an mode.", default=None)
 parser.add_argument("--accname", help="AWS Account Name", default=None)
 parser.add_argument("--active", help="Boolean showing live status.", default="N")
 parser.add_argument("--desc", help="Description of AWS Account.", default=None)
-parser.add_argument("--realusers", help="Account contains REAL USER data.  For GDPR Purps.", default="N")
-parser.add_argument("--accowners", help="Comma delimited list of account owners.", default=None)
-parser.add_argument("--ownerteam", help="Internal Team owning AWS Account", default=None)
-parser.add_argument("--prevname", help="Any former names for this AWS Account", default=None)
-parser.add_argument("--teamemail", help="Email address to notify team for this account.", default=None)
-parser.add_argument("--secopsemail", help="Email address for security notifications for this account.", default=None)
-parser.add_argument("--secopsslack", help="Slack Channel for security notifications for this account.", default=None)
+parser.add_argument(
+    "--realusers", help="Account contains REAL USER data.  For GDPR Purps.", default="N"
+)
+parser.add_argument(
+    "--accowners", help="Comma delimited list of account owners.", default=None
+)
+parser.add_argument(
+    "--ownerteam", help="Internal Team owning AWS Account", default=None
+)
+parser.add_argument(
+    "--prevname", help="Any former names for this AWS Account", default=None
+)
+parser.add_argument(
+    "--teamemail", help="Email address to notify team for this account.", default=None
+)
+parser.add_argument(
+    "--secopsemail",
+    help="Email address for security notifications for this account.",
+    default=None,
+)
+parser.add_argument(
+    "--secopsslack",
+    help="Slack Channel for security notifications for this account.",
+    default=None,
+)
 args = parser.parse_args()
 
 
@@ -36,36 +58,37 @@ def eval_command(args):
 
     if args.mode == "add":
         print(f"In add for {args.accno}")
-        api_url = '{}/awsacc'.format(baseurl)
+        api_url = "{}/awsacc".format(baseurl)
         # print(args)
-        params = {   "AccOwners": args.accowners,
-                        "AccountName": args.accname,
-                        "AccountNumber": args.accno,
-                        "Active": args.active,
-                        "Description": args.desc,
-                        "OwnerTeam": args.ownerteam,
-                        "PreviousName": args.prevname,
-                        "RealUsers": args.realusers,
-                        "SecOpsEmail": args.secopsemail,
-                        "SecOpsSlackChannel": args.secopsslack,
-                        "TeamEmail": args.teamemail,
+        params = {
+            "AccOwners": args.accowners,
+            "AccountName": args.accname,
+            "AccountNumber": args.accno,
+            "Active": args.active,
+            "Description": args.desc,
+            "OwnerTeam": args.ownerteam,
+            "PreviousName": args.prevname,
+            "RealUsers": args.realusers,
+            "SecOpsEmail": args.secopsemail,
+            "SecOpsSlackChannel": args.secopsslack,
+            "TeamEmail": args.teamemail,
         }
 
         print(f"Params {params} type {type(params)}")
-        response = requests.post(api_url, headers=headers, params=params)
+        # print(f"json params: {json.dumps(params)}")
+        response = requests.post(api_url, headers=headers, data=params)
         account_details.append(response.content)
         # print(f"response.content {response.content}")
 
-
     elif args.mode == "search":  # 2, 3
-        api_url = '{}/awsacc/{}'.format(baseurl, args.mode)
+        api_url = "{}/awsacc/{}".format(baseurl, args.mode)
         response = requests.get(api_url, headers=headers, params=params)
 
-        if args.accno is not None:       # 4
-            api_url = '{}/awsacc/{}'.format(baseurl, args.accno)
+        if args.accno is not None:  # 4
+            api_url = "{}/awsacc/{}".format(baseurl, args.accno)
             response = requests.get(api_url, headers=headers, params=params)
         else:
-            api_url = '{}/awsacc'.format(baseurl)  # 1
+            api_url = "{}/awsacc".format(baseurl)  # 1
             response = requests.get(api_url, headers=headers, params=params)
 
     # print(response)
@@ -86,6 +109,7 @@ def eval_command(args):
         # account_details = []
     return account_details
 
+
 def go():
     if args.mode is None:
         args.mode = "search"
@@ -104,7 +128,7 @@ def go():
                 print(f"Accountrequest: ")
                 print(c, json.dumps(c, sort_keys=True, indent=4))
     else:
-        print('[!] Request Failed')
+        print("[!] Request Failed")
 
 
 go()
