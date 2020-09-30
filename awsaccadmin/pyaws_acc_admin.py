@@ -76,7 +76,7 @@ def eval_command(args):
 
         print(f"Params {params} type {type(params)}")
         # print(f"json params: {json.dumps(params)}")
-        response = requests.post(api_url, headers=headers, data=params)
+        response = requests.post(api_url, headers=headers, data=json.dumps(params))
         account_details.append(response.content)
         # print(f"response.content {response.content}")
 
