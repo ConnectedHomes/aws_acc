@@ -75,3 +75,15 @@ echo '{"AccOwners": "Deborah Balm, Chris Allison" }' | http PUT https://ic5jbzor
  python pyaws_acc_admin.py --accno 0987654321
 
  python pyaws_acc_admin.py --mode "add" --accno 0987654321 --accname DebsDemoAccount --active "N" --desc "A Demo Account Add" --realusers "N" --accowners "Deborah Balm" --ownerteam "SRE" --teamemail "sre@hivehome.com" --secopsemail "sre@hivehome.com" --secopsslack "#ops-chat"
+
+
+ Deployment of chalice plus DDB Table
+
+AWS_PROFILE=sredev createtable.py
+AWS_PROFILE=sredev poetry run chalice deploy --stage=dev
+
+AWS_PROFILE=services-prod  createtable.py
+AWS_PROFILE=services-prod poetry run chalice deploy --stage=prod
+
+AWS_PROFILE=sredev poetry run python aws-account-ownership-organization.py sredev
+

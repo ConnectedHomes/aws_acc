@@ -3,13 +3,13 @@
   "app_name": "awsaccadmin",
   "lambda_memory_size": 256,
   "lambda_timeout": 30,
-  "manage_iam_role": false,
+  "manage_iam_role": true,
   "iam_role_arn": "arn:aws:iam::627886280200:role/awsaccadmin-dev",
   "stages": {
     "dev": {
       "api_gateway_stage": "api",
       "environment_variables": {
-        "APP_TABLE_NAME": "AWSAccountAdmin-app-077835b9-9c18-4d7d-9574-960b3d0d7ed2"
+        "APP_TABLE_NAME": "AWSAccountAdmin"
       }
     }
   }

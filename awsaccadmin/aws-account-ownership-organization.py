@@ -3,15 +3,16 @@ from pathlib import Path
 import boto3
 import csv
 from chalicelib import db
+import sys
 
-account = "sredev"
+account = sys.argv[1]
 region = "eu-west-1"
-destination_table = "AWSAccountAdmin-app-077835b9-9c18-4d7d-9574-960b3d0d7ed2"
+destination_table = "AWSAccountAdmin"
 session = boto3.Session(profile_name=account, region_name=region)
 dynamodb_resource = session.resource('dynamodb')
 basedir = os.getcwd()
-dcsv = "Confluence-Owners-AWS-Deleted-Accounts2.csv"
-acsv = "Confluence-Owners-AWS2.csv"
+dcsv = "Confluence-Owners-AWS-Deleted-Accounts.csv"
+acsv = "Confluence-Owners-AWS.csv"
 _DB = None
 
 def in_dictlist(key, value, my_dictlist):

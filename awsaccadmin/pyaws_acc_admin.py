@@ -8,10 +8,26 @@ import argparse
 # 4) Get one numbered AWS account (mode=None, accno=acno)
 # 5) Add an account with the supplied parameters
 
-baseurl = "https://ic5jbzort7.execute-api.eu-west-1.amazonaws.com/api"
+#baseurl = "https://ta6lpu0e8g.execute-api.eu-west-1.amazonaws.com/api"
+baseurl = "https://qbof269pb2.execute-api.eu-west-1.amazonaws.com/api"
 # baseurl = "http://localhost:8000"
 headers = {'Content-Type': 'application/json', }
 api_url = '{}/awsacc'.format(baseurl)
+
+account_keys = {
+          "AccOwners": "accowners",
+          "AccountName": "accname",
+          "AccountNumber": "accno",
+          "Active": "active",
+          "Description": "desc",
+          "OwnerTeam": "ownerteam",
+          "PreviousName": "prevname",
+          "RealUsers": "realusers",
+          "SecOpsEmail": "secopsemail",
+          "SecOpsSlackChannel": "secopsslack",
+          "TeamEmail": "teamemail"
+          }
+inverse_account_keys = {v: k for k, v in account_keys.items()}
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--accno",
@@ -30,28 +46,30 @@ parser.add_argument("--secopsemail", help="Email address for security notificati
 parser.add_argument("--secopsslack", help="Slack Channel for security notifications for this account.", default=None)
 args = parser.parse_args()
 
+
 def make_dict_from_args(args):
-    params = {"AccOwners": args.accowners,
-              "AccountName": args.accname,
-              "AccountNumber": args.accno,
-              "Active": args.active,
-              "Description": args.desc,
-              "OwnerTeam": args.ownerteam,
-              "PreviousName": args.prevname,
-              "RealUsers": args.realusers,
-              "SecOpsEmail": args.secopsemail,
-              "SecOpsSlackChannel": args.secopsslack,
-              "TeamEmail": args.teamemail,
-              }
+    params = {}
+    for key in vars(args):
+        value = getattr(args, key)
+        if key != "mode":
+            newkeyname = inverse_account_keys[key]
+            params[newkeyname] = value
     return params
 
 def eval_command(args):
     account_details = []
     params = {}
+    api_url = '{}/awsacc'.format(baseurl)
     headers = {'Content-Type': 'application/json'}
     if args.mode == "add":
         params = make_dict_from_args(args)
         response = requests.post(api_url, headers=headers, data=json.dumps(params))
+        account_details.append(response.content)
+
+    elif args.mode == "update":
+        api_url = '{}/awsacc/{}'.format(baseurl, args.accno)
+        params = make_dict_from_args(args)
+        response = requests.put(api_url, headers=headers, data=json.dumps(params))
         account_details.append(response.content)
 
     elif args.mode == "search":  # 2, 3
@@ -59,13 +77,12 @@ def eval_command(args):
         response = requests.get(api_url, headers=headers, params=params)
 
         if args.accno is not None:       # 4
-            api_url = '{}/awsacc/{}'.format(baseurl, args.accno)
+            api_url = '{}/awsacc'.format(baseurl)
             response = requests.get(api_url, headers=headers, params=params)
         else:
-             # 1
+            api_url = '{}/awsacc/all'.format(baseurl) # 1
             response = requests.get(api_url, headers=headers, params=params)
 
-    print(response)
     print(response.content)
 
     if response.status_code == 200:
@@ -89,18 +106,17 @@ def go():
         args.mode = "search"
 
     print(f"Process request for mode {args.mode} AWS Account {args.accno}.")
-    print(f"Accno {args.accno}, Mode {args.mode}")
     account_info = eval_command(args)
-    # print(f"Accountrequest {account_info}")
+    print(f"Accountrequest {account_info}")
 
-    if account_info is not None:
-        if len(account_info) == 1:
-            print(f"Accountrequest: {account_info} ")
-            # print(f"Account request: {json.dumps(account_info[0], sort_keys=True, indent=4)} ")
-        else:
-            for c, x in enumerate(account_info):
-                print(f"Accountrequest: ")
-                print(c, json.dumps(c, sort_keys=True, indent=4))
-    else:
-        print('[!] Request Failed')
+    # if account_info is not None:
+    #     if len(account_info) == 1:
+    #         print(f"Accountrequest: {account_info} ")
+    #         # print(f"Account request: {json.dumps(account_info[0], sort_keys=True, indent=4)} ")
+    #     else:
+    #         for c, x in enumerate(account_info):
+    #             print(f"Accountrequest: ")
+    #             print(c, json.dumps(c, sort_keys=True, indent=4))
+    # else:
+    #     print('[!] Request Failed')
 go()

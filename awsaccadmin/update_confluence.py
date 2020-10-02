@@ -142,6 +142,16 @@ def form_new_page(auth, page_id, page_html):
 
     return json.dumps(newpagebody)
 
+def get_ddb_table_data():
+    params = {}
+    # baseurl = "https://ta6lpu0e8g.execute-api.eu-west-1.amazonaws.com/api" # prod
+    baseurl = "https://qbof269pb2.execute-api.eu-west-1.amazonaws.com/api" # dev
+    # baseurl = "http://localhost:8000"
+    headers = {'Content-Type': 'application/json',}
+    api_url = '{}/awsacc/{}'.format(baseurl, "search")
+    response = requests.get(api_url,headers=headers,params=params)
+    return response
+
 def go():
     auth = get_login()
     # pagebody, data = get_words(auth, page_id)
@@ -151,31 +161,33 @@ def go():
 
     print(accheaders)
     print(accdata)
-    # enc_para = '<p class="auto-cursor-target"><br /></p>'
-    #
+    enc_para =   '<p class="auto-cursor-target"><br /></p>'
+
+    table_html = '<table><colgroup><col /><col /><col /><col /><col />' \
+                 '<col /><col /><col /><col /><col /><col /></colgroup>' \
+                 '<tbody>' \
+                 '<tr><th>AccountDebsNumber</th><th>AccountName</th><th>AccountOwner</th><th colspan="1">Active</th><th colspan="1">Description</th><th colspan="1">OwnerTeam</th><th colspan="1">PreviousName</th><th colspan="1">RealUsers</th><th colspan="1">SecOpsEmail</th><th colspan="1">SecOpsSlackChannel</th><th colspan="1">TeamEmail</th></tr>' \
+                 '<tr><td><p class="p1"><span class="s1">01234567810</span></p></td><td><p class="p1"><span class="s1">DebsTestAccount21</span></p></td><td>Deborah Balm</td><td colspan="1">Y</td><td colspan="1"><p class="p1"><span class="s1">Debs purple Test Account 2</span></p></td><td colspan="1">SRE2</td><td colspan="1">Debs</td><td colspan="1">N</td><td colspan="1"><p class="p1"><span class="s1"><a href="mailto:secadmin-prod.awsnotifications@hivehome.dev">secadmin-prod.awsnotifications@hivehome.dev</a></span></p></td><td colspan="1"><p class="p1"><span class="s1">#debs_backoffice</span></p></td><td colspan="1"><p class="p1"><span class="s1"><a href="mailto:sre@bgch.co.uk">sre@bgch.co.uk</a></span></p></td></tr>' \
+                 '<tr><td colspan="1">9849534589</td><td colspan="1"><span class="s1">Chris54Account</span></td><td colspan="1">Chris Allison</td><td colspan="1">Y</td><td colspan="1">Chris Allisons Account</td><td colspan="1">SRE2</td><td colspan="1">Chris</td><td colspan="1">N</td><td colspan="1"><p class="p1"><span class="s1"><a href="mailto:secadmin-prod.awsnotifications@hivehome.dev">secadmin-prod.awsnotifications@hivehome.dev</a></span></p></td><td colspan="1"><p class="p1"><span class="s1">#debs_backoffice</span></p></td><td colspan="1"><p class="p1"><span class="s1"><a href="mailto:sre@bgch.co.uk">sre@bgch.co.uk</a></span></p></td></tr></tbody></table>'
+
     # page_html = '<p class="auto-cursor-target"><br /></p><table><colgroup><col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col /></colgroup><tbody><tr><th>AccountDebsNumber</th><th>AccountName</th><th>AccountOwner</th><th colspan="1">Active</th><th colspan="1">Description</th><th colspan="1">OwnerTeam</th><th colspan="1">PreviousName</th><th colspan="1">RealUsers</th><th colspan="1">SecOpsEmail</th><th colspan="1">SecOpsSlackChannel</th><th colspan="1">TeamEmail</th></tr><tr><td><p class="p1"><span class="s1">01234567810</span></p></td><td><p class="p1"><span class="s1">DebsTestAccount2</span></p></td><td>Deborah Balm</td><td colspan="1">Y</td><td colspan="1"><p class="p1"><span class="s1">Debs purple Test Account 2</span></p></td><td colspan="1">SRE2</td><td colspan="1">Debs</td><td colspan="1">N</td><td colspan="1"><p class="p1"><span class="s1"><a href="mailto:secadmin-prod.awsnotifications@hivehome.dev">secadmin-prod.awsnotifications@hivehome.dev</a></span></p></td><td colspan="1"><p class="p1"><span class="s1">#debs_backoffice</span></p></td><td colspan="1"><p class="p1"><span class="s1"><a href="mailto:sre@bgch.co.uk">sre@bgch.co.uk</a></span></p></td></tr><tr><td colspan="1">9849534589</td><td colspan="1"><span class="s1">Chris54Account</span></td><td colspan="1">Chris Allison</td><td colspan="1">Y</td><td colspan="1">Chris Allisons Account</td><td colspan="1">SRE2</td><td colspan="1">Chris</td><td colspan="1">N</td><td colspan="1"><p class="p1"><span class="s1"><a href="mailto:secadmin-prod.awsnotifications@hivehome.dev">secadmin-prod.awsnotifications@hivehome.dev</a></span></p></td><td colspan="1"><p class="p1"><span class="s1">#debs_backoffice</span></p></td><td colspan="1"><p class="p1"><span class="s1"><a href="mailto:sre@bgch.co.uk">sre@bgch.co.uk</a></span></p></td></tr></tbody></table><p class="auto-cursor-target"><br /></p>'
-    # table_html = re.sub(enc_para,'',page_html)
-    #
-    # print(table_html)
 
-    df_marks = pd.DataFrame({'name': [ 'Somu','Kiku','Amol','Lini' ],
-                             'physics': [ 68,74,77,78 ],
-                             'chemistry': [ 84,56,73,69 ],
-                             'algebra': [ 78,88,82,87 ]})
+    page_html = f'{enc_para}{table_html}{enc_para}'
 
-    # render dataframe as html
-    html = df_marks.to_html()
-    print(html)
+    data = get_ddb_table_data()
 
-    # postdata = form_new_page(auth, page_id,page_html)
-    # response = put_page_body(auth, page_id, postdata)
-    #
-    # if response.status_code == 200:
-    #     print("RESPONSE ALL GOOD")
-    # else:
-    #     print(response.status_code)
-    #     print(response.content)
-    #     print(response.text)
+    print(data)
+
+
+    postdata = form_new_page(auth, page_id,page_html)
+    response = put_page_body(auth, page_id, postdata)
+
+    if response.status_code == 200:
+        print("RESPONSE ALL GOOD")
+    else:
+        print(response.status_code)
+        print(response.content)
+        print(response.text)
 
 
 

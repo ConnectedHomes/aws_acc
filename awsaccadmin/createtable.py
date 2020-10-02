@@ -6,20 +6,14 @@ import boto3
 
 TABLES = {
     'app': {
-        'prefix': 'AWSAccountAdmin-app',
+        'prefix': 'AWSAccountAdmin',
         'env_var': 'APP_TABLE_NAME',
         'hash_key': 'AccountNumber'
     },
-    'users': {
-        'prefix': 'AWSAccountUsers-app',
-        'env_var': 'USERS_TABLE_NAME',
-        'hash_key': 'Username',
-    }
 }
 
-
 def create_table(table_name_prefix, hash_key, range_key=None):
-    table_name = '%s-%s' % (table_name_prefix, str(uuid.uuid4()))
+    table_name = table_name_prefix
     client = boto3.client('dynamodb')
     key_schema = [
         {

@@ -75,18 +75,23 @@ class DynamoDBAWSAcc(AWSAccDB):
             Key={'AccountNumber': AccountNumber} )
         return response
 
-    def update_account(self, AccountNumber, jsonbody):
-        item = self.get_account(AccountNumber)
-        for key in jsonbody:
-            item[key] = jsonbody[key]
-        response = self._table.put_item(Item=item)
+    def update_account(self, accno, accitem):
+        response = self._table.get_item(
+            Key={'AccountNumber': accno} )
+
+        if 'Item' in response:
+            item = response['Item']
+
+            for key in accitem:
+                item[key] = accitem[key]
+
+            response = self._table.put_item(Item=item)
         return response
 
     def toggle_account_active(self, AccountNumber=None, Active=None):
         item = self.get_account(AccountNumber)
         if item[0] != 404:
             item = item[0]
-            print(f"Active: {Active} Item {item}")
             item['Active'] = Active
             response = self._table.put_item(Item=item)
         else:

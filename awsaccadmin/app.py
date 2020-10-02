@@ -6,7 +6,7 @@ import os
 import json
 
 app = Chalice(app_name="awsaccadmin")
-# app.debug = True
+app.debug = True
 _DB = None
 
 def get_app_db():
@@ -36,14 +36,7 @@ def get_account(accno):
 
 @app.route("/awsacc", methods=["POST"], content_types=['application/json'])
 def add_new_account():
-    # parsed = parse_qs(app.current_request.raw_body)
-    # body = '{"AccOwners": "Deborah Balm", "AccountName": "DebsDemoAccount", "AccountNumber": "0987654321", "Active": "N", "Description": "A Demo Account Add", "OwnerTeam": "SRE", "PreviousName": null, "RealUsers": "N", "SecOpsEmail": "sre@hivehome.com", "SecOpsSlackChannel": "#ops-chat", "TeamEmail": "sre@hivehome.com"}'
-    # body = app.current_request.raw_body
-    request = app.current_request
-    # print(request.method)
-    body = request.json_body
-
-    # body = json.loads(body)
+    body = app.current_request.json_body
     response = get_app_db().add_account(body)
     return response
 
@@ -53,8 +46,8 @@ def delete_account(accno):
     # return get_app_db().delete_account( AccountNumber=accno)
     return get_app_db().toggle_account_active( AccountNumber=accno, Active="N")
 
-@app.route("/awsacc/{accno}", methods=["PUT"])
+@app.route("/awsacc/{accno}", methods=["PUT"], content_types=['application/json'])
 def update_account(accno):
     body = app.current_request.json_body
-    print(type(body))
-    get_app_db().update_account( accno, body)
+    response = get_app_db().update_account(accno, body)
+    return response
