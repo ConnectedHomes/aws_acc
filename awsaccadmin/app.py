@@ -20,9 +20,14 @@ def get_app_db():
 def get_awsacc():
     return get_app_db().list_accounts()
 
-@app.route("/awsacc/all", methods=["GET"])
+@app.route("/awsacc/alllive", methods=["GET"])
 def get_awsacc():
     accounts = get_app_db().list_live_accounts()
+    return accounts, f"Count: {len(accounts)}"
+
+@app.route("/awsacc/alldeleted", methods=["GET"])
+def get_awsacc():
+    accounts = get_app_db().list_deleted_accounts()
     return accounts, f"Count: {len(accounts)}"
 
 @app.route("/awsacc/allever", methods=["GET"])

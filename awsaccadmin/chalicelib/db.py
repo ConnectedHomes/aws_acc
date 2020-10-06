@@ -14,6 +14,9 @@ class AWSAccDB(object):
     def list_live_accounts(self):
         pass
 
+    def list_deleted_accounts(self):
+        pass
+
     def get_account(self, AccountNumber):
         pass
 
@@ -41,6 +44,11 @@ class DynamoDBAWSAcc(AWSAccDB):
 
     def list_live_accounts(self):
         response = self._table.scan(FilterExpression = Attr('Active').eq('Y'))
+        sitems = response['Items']
+        return sitems
+
+    def list_deleted_accounts(self):
+        response = self._table.scan(FilterExpression = Attr('Active').eq('N'))
         sitems = response['Items']
         return sitems
 

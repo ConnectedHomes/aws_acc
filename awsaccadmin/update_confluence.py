@@ -148,7 +148,7 @@ def get_ddb_table_data():
     baseurl = "https://qbof269pb2.execute-api.eu-west-1.amazonaws.com/api" # dev
     # baseurl = "http://localhost:8000"
     headers = {'Content-Type': 'application/json',}
-    api_url = '{}/awsacc/{}'.format(baseurl, "search")
+    api_url = '{}/awsacc/alllive'.format(baseurl, "search")
     response = requests.get(api_url,headers=headers,params=params)
     return response
 
@@ -174,10 +174,22 @@ def go():
 
     page_html = f'{enc_para}{table_html}{enc_para}'
 
-    data = get_ddb_table_data()
-
+    response = get_ddb_table_data()
+    jsondata = json.loads(response.content)
+    data = jsondata[0]
     print(data)
+    print(type(data))
 
+    for x in data:
+        print(type(x))
+        print(x)
+
+    df = pd.DataFrame(data)
+    dfg = df.groupby([ 'AccountNumber']).sum()
+    print(dfg)
+    page_html = dfg.to_html()
+
+    print(page_html)
 
     postdata = form_new_page(auth, page_id,page_html)
     response = put_page_body(auth, page_id, postdata)

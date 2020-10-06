@@ -36,6 +36,7 @@ parser.add_argument("--accno",
 parser.add_argument("--mode", help="use an mode.", default=None)
 parser.add_argument("--accname", help="AWS Account Name", default=None)
 parser.add_argument("--active", help="Boolean showing live status.", default="N")
+parser.add_argument("--deleted", help="Boolean to get deleted accounts.", default="N")
 parser.add_argument("--desc", help="Description of AWS Account.", default=None)
 parser.add_argument("--realusers", help="Account contains REAL USER data.  For GDPR Purps.", default="N")
 parser.add_argument("--accowners", help="Comma delimited list of account owners.", default=None)
@@ -80,8 +81,12 @@ def eval_command(args):
             api_url = '{}/awsacc'.format(baseurl)
             response = requests.get(api_url, headers=headers, params=params)
         else:
-            api_url = '{}/awsacc/all'.format(baseurl) # 1
-            response = requests.get(api_url, headers=headers, params=params)
+            if args.deleted == "Y":
+                api_url = '{}/awsacc/alldeleted'.format(baseurl)  # 1
+                response = requests.get(api_url,headers=headers,params=params)
+            else:
+                api_url = '{}/awsacc/alllive'.format(baseurl) # 1
+                response = requests.get(api_url, headers=headers, params=params)
 
     print(response.content)
 
